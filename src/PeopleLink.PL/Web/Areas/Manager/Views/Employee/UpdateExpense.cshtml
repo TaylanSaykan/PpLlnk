@@ -1,0 +1,93 @@
+﻿
+@{
+}
+
+@inject UserManager<ApplicationUser> UserManager
+@model GetExpenseViewModel
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Harcama Talep - Onay/Red</h2>
+        </div>
+    </div>
+</div>
+
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            @if (Model.Status == "Onaylandı.")
+            {
+                <form asp-action="UpdateExpense">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Status" />
+                    <input type="hidden" asp-for="ResponseDate" />
+                    <input type="hidden" asp-for="RequestDate" />
+                    <input type="hidden" asp-for="EmployeeId" />
+                    <input type="hidden" asp-for="ExpenseType" />
+                    <input type="hidden" asp-for="DocumentUri" />
+                    <input type="hidden" asp-for="RequestDate" />
+                    <div class="row">
+                        <h4>
+                            @{
+                                var user = await UserManager.FindByIdAsync(Model.EmployeeId);
+                                if (user != null)
+                                {
+                                    <strong>@user.FirstName @(user.MiddleName != null ? user.MiddleName : "") @user.LastName  @(user.MiddleLastName != null ? user.MiddleLastName : "") </strong>
+                                }
+                            }
+                            adlı personelin <strong>@Html.DisplayFor(modelItem => Model.ExpenseType)</strong> harcamasını onaylıyor musunuz?
+                        </h4>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-1 me-1">
+                            <button type="submit" class="btn btn-primary">Onayla</button>
+                        </div>
+                        <div class="col-2">
+                            <button asp-controller="Employee" asp-action="ExpenseRequests" class="btn btn-secondary">Anasayfa Dön</button>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+        <form asp-action="UpdateExpense">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="ResponseDate" />
+            <input type="hidden" asp-for="RequestDate" />
+            <input type="hidden" asp-for="EmployeeId" />
+            <input type="hidden" asp-for="ExpenseType" />
+            <input type="hidden" asp-for="DocumentUri" />
+            <input type="hidden" asp-for="RequestDate" />
+            <div class="row">
+                <h4>
+                    @{
+                        var user = await UserManager.FindByIdAsync(Model.EmployeeId);
+                        if (user != null)
+                        {
+                            <strong>@user.FirstName @(user.MiddleName != null ? user.MiddleName : "") @user.LastName  @(user.MiddleLastName != null ? user.MiddleLastName : "") </strong>
+                        }
+                    }
+                    adlı personelin <strong>@Html.DisplayFor(modelItem => Model.ExpenseType)</strong> harcamasını reddiyor musunuz?
+                </h4>
+            </div>
+            <div class="row mt-3">
+                <div class="col-1 me-1">
+                    <button type="submit" class="btn btn-primary">Reddet</button>
+                </div>
+                <div class="col-2">
+                    <button asp-controller="Employee" asp-action="ExpenseRequests" class="btn btn-secondary">Anasayfa Dön</button>
+                </div>
+            </div>
+        </form>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+

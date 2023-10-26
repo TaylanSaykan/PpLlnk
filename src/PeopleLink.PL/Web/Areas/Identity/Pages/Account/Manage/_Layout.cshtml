@@ -1,0 +1,39 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Profil</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Bilgileri Düzenle</h2>
+        <div class="full price_table padding_infor_info">
+            <hr />
+            <div class="row">
+                <div class="col-md-3 justify-content-end">
+                    <partial name="_ManageNav" />
+                </div>
+                <div class="col-md-9">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

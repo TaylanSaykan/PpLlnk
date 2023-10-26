@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Yönetici Atama";
+}
+@model Web.Areas.Admin.Models.AssignViewModel
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Yönetici</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <form asp-action="AssignManagerToCompany" method="post">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label asp-for="CompanyId" class="form-label">Şirket Listesi</label>
+                                    <select asp-for="CompanyId" class="form-select" asp-items="@ViewBag.Companies">
+                                        <option value="value" selected disabled>Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                                <div class="col-4">
+                                    <label asp-for="ManagerId" class="form-label">Yöneticiler Listesi</label>
+                                    <select asp-for="ManagerId" class="form-select" asp-items="@ViewBag.Managers">
+                                        <option value="value" selected disabled>Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="ManagerId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <button class="btn btn-primary">Atama Yap</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

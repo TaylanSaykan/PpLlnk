@@ -1,0 +1,93 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    var districtId = TempData["DistrictId"];
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<form id="profile-form" method="post" enctype="multipart/form-data">
+    <input asp-for="DistrictId" type="hidden" id="userDistrict" />
+    <div class="text-center">
+        <div class="row align-items-baseline">
+            <div class="col-md-6">
+                <label asp-for="Input.ProfileImage" class="form-label"></label>
+                <input asp-for="Input.ProfileImage" class="form-control" placeholder="Profil resmi seçiniz." />
+                <span asp-validation-for="Input.ProfileImage" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Input.CityId"></label>
+                <select asp-for="Input.CityId" class="form-control" asp-items="Model.Cities" id="inputCity">
+                    <option selected disabled>Seçiniz</option>
+                </select>
+                <span asp-validation-for="Input.CityId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-md-6">
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Telefon Numarası" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Input.DistrictId"></label>
+                <select asp-for="Input.DistrictId" class="form-control" id="inputDistrict">
+                    <option selected disabled">Lütfen Önce İl Seçiniz</option>
+                </select>
+                <span asp-validation-for="Input.DistrictId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <label asp-for="Input.FullAddress" class="form-label"></label>
+    <textarea asp-for="Input.FullAddress" id="summernote" rows="5" class="form-control" placeholder="Adres"></textarea>
+    <span asp-validation-for="Input.FullAddress" class="text-danger"></span>
+    <button id="update-profile-button" type="submit" class="main_bt read_bt w-100 btn btn-lg btn-primary">Kaydet</button>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function loadDistricts() {
+            const selectedCityName = document.getElementById("inputCity");
+            const userDistrict = document.getElementById("userDistrict").value;
+
+            $.ajax({
+                url: "@Url.Action("GetDistricts","Home", new { area = "" })",
+                data: {
+                    cityId: selectedCityName.value
+                },
+                success: function (data) {
+                    console.log(data);
+                    // İlçe seçeneklerini güncelle
+                    const inputDistrict = $("#inputDistrict");
+                    $("#inputDistrict").empty();
+                    $.each(data, function (index, district) {
+                        $("#inputDistrict").append($('<option>', {
+                            value: district.value,
+                            text: district.text
+                        }));
+                    });
+
+                    inputDistrict.val(userDistrict);
+                }
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            loadDistricts();
+
+            const selectedCityName = document.getElementById("inputCity");
+
+            selectedCityName.addEventListener("change", function () {
+                loadDistricts();
+            });
+        });
+        $('#summernote').summernote({ height: 200 })
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

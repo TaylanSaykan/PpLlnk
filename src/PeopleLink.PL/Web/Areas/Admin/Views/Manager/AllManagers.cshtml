@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Yönetici Listesi";
+}
+
+@model List<ApplicationUser>
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Yönetici</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>Yönetici Listesi <br /></h2>
+                                        </div>
+
+                                        <div class="heading1 margin_0">
+                                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-success">
+                                                Yeni Yönetici Ekle
+                                                <i class="fa-solid fa-plus"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        @if (TempData["Success"] != null)
+                                        {
+                                            <div class="alert alert success">@TempData["Success"]</div>
+                                        }
+                                        <table id="managerTable" class="table-striped table-hover">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Fotoğraf</th>
+                                                    <th>Ad - Soyad</th>
+                                                    <th>Meslek</th>
+                                                    <th>Departman</th>
+                                                    <th>Telefon</th>
+                                                    <th>Durumu</th>
+                                                    <th>Atandığı Şirket</th>
+                                                    <th>Detay Bilgiler</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var manager in Model)
+                                                {
+                                                    <tr>
+                                                        <td><img src="~/img/@manager.PictureUri" alt="Alternate Text" width="80" /></td>
+                                                        <td>@manager.FirstName  @(manager.MiddleName != null ? manager.MiddleName : "") @(manager.MiddleLastName != null ? manager.MiddleLastName : "") @manager.LastName</td>
+                                                        <td>@manager.OccupationName</td>
+                                                        <td>@manager.DepartmentName</td>
+                                                        <td>@manager.PhoneNumber</td>
+                                                        @if (manager.IsActive)
+                                                        {
+                                                            <td> <div class="bg-success text-white text-center p-1">Aktif</div></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td> <div class="bg-danger text-white text-center p-1">Pasif</div></td>
+                                                        }
+                                                        @if (manager.CompanyId == 0)
+                                                        {
+                                                            <td><div class="text-danger text-center p-1">Atama Yapılmadı!</div></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><div class="text-success text-center p-1">@manager.CompanyName</div></td>
+                                                        }
+
+                                                        <td class="text-center">
+                                                            <a asp-controller="Manager" asp-action="DetailManager" asp-route-managerId="@manager.Id"><i class="fa-solid fa-info-circle orange_color2"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const managerTable = document.getElementById('managerTable');
+        if (managerTable) {
+            new simpleDatatables.DataTable(managerTable);
+        }
+    </script>
+}

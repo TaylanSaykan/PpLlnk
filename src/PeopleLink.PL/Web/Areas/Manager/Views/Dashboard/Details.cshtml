@@ -1,0 +1,103 @@
+﻿@{ 
+    ViewBag.Title = "Detay Bilgiler";
+}
+
+@model Web.Areas.Manager.Models.ManagerDetailsViewModel
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Profil</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Detay Bilgiler</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-4">
+                    <div class="row justify-content-center">
+                        <img src="~/img/@Model.Picture" class="mb-3 img-responsive rounded-circle" width="350" />
+                    </div>
+                    <div class="d-flex flex-column justify-content-center align-items-center contact_inner">
+                        <h3>@Model.FirstName @Model.MiddleName @Model.LastName @Model.MiddleLastName</h3>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Telefon:</div>
+                        <div>@Model.PhoneNumber</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">TC Kimlik No:</div>
+                        <div> @Model.IdentityNumber</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Doğum Tarihi:</div>
+                        <div>@Model.BirthDate.ToShortDateString()</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Doğum Yeri:</div>
+                        <div>@Model.BirthPlace</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Adres:</div>
+                        <div>@Model.FullAddress , @Model.City/@Model.District</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Aktiflik Durumu:</div>
+                        <div>
+                            @if (Model.IsActive)
+                            {
+                                <div class="bg-success text-white p-1">Aktif</div>
+                            }
+                            else
+                            {
+                                <div class="bg-danger text-white p-1">Pasif</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">İşe Giriş Tarihi:</div>
+                        <div>@Model.HireDate.ToShortDateString()</div>
+                    </div>
+
+                    @if (!Model.IsActive)
+                    {
+                        <div class="d-flex justify-content-between mb-3">
+                            <div style="font-weight:bold">İşten Ayrılma Tarihi:</div>
+                            <div> @Model.TerminationDate.ToShortDateString()</div>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Meslek:</div>
+                        <div>@Model.OccupationName</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Departman:</div>
+                        <div>@Model.DepartmentName</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Şirket:</div>
+                        <div>@Model.CompanyName</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

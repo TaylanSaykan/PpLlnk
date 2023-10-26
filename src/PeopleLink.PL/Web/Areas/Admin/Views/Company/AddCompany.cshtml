@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Şirket Ekleme";
+    var titles = ViewBag.CompanyTitles;
+    var cities = ViewBag.Cities;
+}
+
+@model Web.Areas.Admin.Models.PostCompanyViewModel
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Şirket Yönetimi</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Yeni Şirket Ekle</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <form asp-action="AddCompany" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                @if (TempData["WarningMessage"] != null)
+                {
+                    <div class="text-danger" role="alert">@TempData["WarningMessage"]</div>
+                }
+                <input type="hidden" asp-for="CityName" id="cityName" />
+                <input type="hidden" asp-for="DistrictName" id="districtName" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="CompanyLogo">Şirket Logosu</label>
+                            <input asp-for="CompanyLogo" class="form-control" type="file" />
+                            <span asp-validation-for="CompanyLogo" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CompanyName">Şirket Adı</label>
+                            <input asp-for="CompanyName" class="form-control" placeholder="Şirket Adı" />
+                            <span asp-validation-for="CompanyName" class="text-danger"></span>
+                        </div>
+                        <div class="1 mb-3">
+                            <label asp-for="Title" class="form-label">Ünvan</label>
+                            <select asp-for="Title" class="form-control" id="title">
+                                <option value="" disabled selected>Seçiniz</option>
+                                @foreach (var title in titles)
+                                {
+                                    <option value="@((int)title)">@ApplicationCore.Constants.EnumHelper.DisplayName(title)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="PhoneNumber">Telefon Numarası</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="0(xxx)-xxx-xxxx" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="Email">E-mail</label>
+                            <input asp-for="Email" class="form-control" placeholder="E-mail" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="  mb-3">
+                            <label asp-for="TaxNumber">Vergi Numarası</label>
+                            <input asp-for="TaxNumber" class="form-control" placeholder="Vergi Numarası" />
+                            <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="TaxOffice">Vergi Dairesi</label>
+                            <input asp-for="TaxOffice" class="form-control" placeholder="Vergi Dairesi" />
+                            <span asp-validation-for="TaxOffice" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="MERSISNumber">MERSİS Numarası</label>
+                            <input asp-for="MERSISNumber" class="form-control" placeholder="MERSİS Numarası" />
+                            <span asp-validation-for="MERSISNumber" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="EstablishmentYear">Kuruluş Yılı</label>
+                            <input asp-for="EstablishmentYear" class="form-control" type="number" min="1800" max="2023" />
+                            <span asp-validation-for="EstablishmentYear" class="text-danger"></span>
+                        </div>
+                        <div class="  mb-3">
+                            <label asp-for="EmployeeCount">Çalışan Sayısı</label>
+                            <input asp-for="EmployeeCount" class="form-control" type="number" min="1" max="100000" placeholder="Çalışan Sayısı" />
+                            <span asp-validation-for="EmployeeCount" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="  mb-3">
+                            <label asp-for="CityId">İl</label>
+                            <select asp-for="CityId" class="form-control" asp-items="cities" id="inputCity">
+                                <option selected disabled>Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="CityId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="  mb-3">
+                            <label asp-for="DistrictId">İlçe</label>
+                            <select asp-for="DistrictId" class="form-control" id="inputDistrict">
+                                <option selected disabled>Lütfen Önce İl Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="DistrictId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="  mb-3">
+                            <label asp-for="ContractStartDate">Sözleşme Başlangıç Tarihi</label>
+                            <input asp-for="ContractStartDate" class="form-control" type="date" id="startDate" />
+                            <span asp-validation-for="ContractStartDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="  mb-3">
+                            <label asp-for="ContractEndDate">Sözleşme Bitiş Tarihi</label>
+                            <input asp-for="ContractEndDate" class="form-control" type="date" id="endDate" />
+                            <span asp-validation-for="ContractEndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="  mb-3">
+                            <label asp-for="Address">Adres</label>
+                            <textarea asp-for="Address" id="summernote" rows="5" class="form-control" placeholder="Adres"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Şirket Ekle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const selectedCityName = document.getElementById("inputCity");
+         const cityName = document.getElementById("cityName");
+         const districtName = document.getElementById("districtName");
+
+         selectedCityName.addEventListener("change", function () {
+             $.ajax({
+                 url: "@Url.Action("GetDistricts","Home", new { area = "" })",
+                 data: {
+                     cityId: selectedCityName.value
+                                                           },
+                 success: function (data) {
+                     console.log(data)
+                     $("#inputDistrict").empty();
+                     $.each(data, function (index, district) {
+                         $("#inputDistrict").append($('<option>', {
+                             value: district.value,
+                             text: district.text
+                         }));
+                         districtName.value = district.text;
+                     });
+                  }
+             });
+
+             const selectedOption = selectedCityName.options[selectedCityName.selectedIndex];
+             cityName.value = selectedOption.textContent;
+         });
+
+
+         const startDate = document.getElementById("startDate");
+         const endDate = document.getElementById("endDate");
+         const today = new Date();
+         today.setDate(today.getDate() - 10);
+         startDate.min = today.toISOString().split("T")[0];
+         today.setDate(today.getDate() + 21);
+         startDate.max = today.toISOString().split("T")[0];
+
+
+         startDate.addEventListener("change", function () {
+             var startingDate = new Date(startDate.value);
+             var endingDate = new Date(startingDate);
+             startingDate.setDate(startingDate.getDate() + 365);
+             endingDate.setDate(startingDate.getDate() + 730);
+
+             endDate.value = endDate.min;
+             endDate.min = startingDate.toISOString().split("T")[0];
+             endDate.max = endingDate.toISOString().split("T")[0];
+         });
+
+     });
+    </script>
+
+}
+

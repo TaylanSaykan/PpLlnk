@@ -1,0 +1,148 @@
+﻿@{
+
+    ViewBag.Title = "Harcama Talep Sayfası";
+    var expenseTypes = ViewBag.ExpenseTypes;
+    var currencyTypes = ViewBag.CurrentTypes;
+    var employeeId = ViewData["EmployeeId"];
+
+}
+
+
+@model PostExpenseViewModel
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Harcamalar</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Harcama Talep Et</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <hr>
+        <div class="row">
+            <div class="col-md-10">
+                <div class="row ">
+                    <div class="col-md-8">
+                        <form asp-action="ExpenseRequest" id="profile-form" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input type="hidden" asp-for="@employeeId" />
+                                <label asp-for="ExpenseType" class="form-label">Harcama Türünü Seçiniz</label>
+                                <select asp-for="ExpenseType" class="form-control" id="expenseType">
+                                    <option value="" disabled selected>Seçiniz</option>
+                                    @foreach (var expenseType in expenseTypes)
+                                    {
+                                        <option value="@((int)expenseType)">@ApplicationCore.Constants.EnumHelper.DisplayName(expenseType)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ExpenseType" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Amount" class="form-label">Tutar:</label>
+                                    <input asp-for="Amount" type="number" value="" class="form-control" id="amount" />
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="selectedCurrency" class="form-label">Para Birimi</label>
+                                    <select asp-for="Currency" class="form-control" id="currency">
+                                        <option value="" disabled selected>Seçiniz</option>
+                                        @foreach (var currency in currencyTypes)
+                                        {
+                                            <option value="@((int)currency)">@ApplicationCore.Constants.EnumHelper.DisplayName(currency)</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Currency" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="Document">Doküman:</label>
+                                <input class="form-control" type="file" asp-for="Document" />
+                                <span asp-validation-for="Document" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input asp-for="Status" type="hidden" value="Onay Bekliyor." class="form-control" />
+                            </div>
+                            <button id="update-profile-button" type="submit" class="main_bt read_bt w-100 btn btn-lg btn-primary">Talep Et</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            <label>Kalan Harcama Tutarı: <strong>@(((decimal)ViewData["Amount"]) > 0 ? ((decimal)ViewData["Amount"]) : 0) ₺</strong></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+        document.getElementById("expenseType").addEventListener("change", function () {
+            var selectedValue = this.value;
+            var amountInput = document.getElementById("amount");
+
+            document.getElementById("currency").addEventListener("change", function () {
+                var currency = document.getElementById("currency");
+                var currencyOption = currency.options[currency.selectedIndex];
+                console.log(currencyOption)
+                if (currencyOption.value == '0')  // tl ise
+                {
+                    if (selectedValue == '0') {         // konaklama
+                        amountInput.min = 200;
+                        amountInput.max = 15000;
+                    } else if (selectedValue == '1') { // özel sağlık
+                        amountInput.min = 100;
+                        amountInput.max = 20000;
+                    } else if (selectedValue == '2') {  // yiyecek
+                        amountInput.min = 100;
+                        amountInput.max = 2000;
+                    } else if (selectedValue == '3') {  // telefon
+                        amountInput.min = 100;
+                        amountInput.max = 1000;
+                    } else if (selectedValue == '4') {  // k. geliişim
+                        amountInput.min = 50;
+                        amountInput.max = 1500;
+                    } else {                           // seyahat
+                        amountInput.min = 50;
+                        amountInput.max = 2500;
+                    }
+                }
+                else {
+
+                    if (selectedValue == '0') {         // konaklama
+                        amountInput.min = 100;
+                        amountInput.max = 500;
+                    } else if (selectedValue == '1') { // özel sağlık
+                        amountInput.min = 100;
+                        amountInput.max = 1000;
+                    } else if (selectedValue == '2') {  // yiyecek
+                        amountInput.min = 10;
+                        amountInput.max = 200;
+                    } else if (selectedValue == '3') {  // telefon
+                        amountInput.min = 10;
+                        amountInput.max = 250;
+                    } else if (selectedValue == '4') {  // k. geliişim
+                        amountInput.min = 10;
+                        amountInput.max = 300;
+                    } else {                           // seyahat
+                        amountInput.min = 10;
+                        amountInput.max = 300;
+                    }
+                }
+
+            });
+
+        });
+
+    </script>
+
+}

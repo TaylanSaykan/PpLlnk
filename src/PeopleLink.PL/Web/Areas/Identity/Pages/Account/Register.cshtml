@@ -1,0 +1,266 @@
+﻿@page
+@inject UserManager<ApplicationUser> UserManager
+@model RegisterModel
+@{
+    ViewData["Title"] = "Çalışan Ekle";
+    var user = await UserManager.GetUserAsync(User);
+    TempData["Name"] = user.FirstName + " " + (user.MiddleName != null ? user.MiddleName : "") + (user.MiddleLastName != null ? user.MiddleLastName : "") + " " + user.LastName;
+    TempData["Picture"] = user.PictureUri;
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Personel İşlemleri</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Personel Ekle</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="row justify-content-center align-items-center">
+
+                <div class="col">
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                        <hr />
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                        @if (TempData["WarningMessage"] != null)
+                        {
+                            <div class="text-danger" role="alert">@TempData["WarningMessage"]</div>
+                        }
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label asp-for="Input.ProfileImage">Fotoğraf</label>
+                                    <input asp-for="Input.ProfileImage" class="form-control" placeholder="Profil Fotoğrafı" />
+                                    <span asp-validation-for="Input.ProfileImage" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.FirstName">Ad</label>
+                                    <input asp-for="Input.FirstName" class="form-control" placeholder="Ad" />
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.MiddleName">İkinci Ad</label>
+                                    <input asp-for="Input.MiddleName" class="form-control" placeholder="İkinci Ad" />
+                                    <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.LastName">Soyad</label>
+                                    <input asp-for="Input.LastName" class="form-control" placeholder="Soyad" />
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class=" mb-3">
+                                    <label asp-for="Input.MiddleLastName">İkinci Soyad</label>
+                                    <input asp-for="Input.MiddleLastName" class="form-control" placeholder="İkinci Soyad" />
+                                    <span asp-validation-for="Input.MiddleLastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.IdentityNumber">Kimlik Numarası</label>
+                                    <input asp-for="Input.IdentityNumber" class="form-control" placeholder="Kimlik No" />
+                                    <span asp-validation-for="Input.IdentityNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.PhoneNumber">Cep Telefonu</label>
+                                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="5xx-xxx-xxxx" />
+                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.BirthDate"></label>
+                                    <input asp-for="Input.BirthDate" class="form-control" placeholder="Doğum Tarihi" />
+                                    <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Input.BirthPlaceId"></label>
+                                    <select asp-for="Input.BirthPlaceId" class="form-control" asp-items="Model.Cities">
+                                        <option selected disabled>Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="Input.BirthPlaceId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class=" mb-3">
+                                    <label asp-for="Input.HireDate"></label>
+                                    <input asp-for="Input.HireDate" class="form-control" placeholder="İşe Giriş Tarihi" />
+                                    <span asp-validation-for="Input.HireDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                @if (await UserManager.IsInRoleAsync(user, "Admin"))
+                                {
+                                    <div class="mb-3">
+                                        <select asp-for="Input.OccupationId" hidden class="form-control">
+                                            <option selected value="8">Şirket Yöneticisi</option>
+                                        </select>
+                                    </div>
+                                }
+                                else if (await UserManager.IsInRoleAsync(user, "Manager"))
+                                {
+                                    <div class="mb-3">
+                                        <label asp-for="Input.OccupationId"></label>
+                                        <select asp-for="Input.OccupationId" class="form-control" asp-items="Model.Occupations">
+                                            <option selected disabled>Seçiniz</option>
+                                        </select>
+                                        <span asp-validation-for="Input.OccupationId" class="text-danger"></span>
+                                    </div>
+                                }
+
+                            </div>
+                            <div class="col-md-4">
+                                @if (await UserManager.IsInRoleAsync(user, "Admin"))
+                                {
+                                    <div class=" mb-3">
+                                        <select asp-for="Input.DepartmentId" hidden class="form-control">
+                                            <option selected value="8">Yönetim ve İdari İşler</option>
+                                        </select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class=" mb-3">
+                                        <label asp-for="Input.DepartmentId"></label>
+                                        <select asp-for="Input.DepartmentId" class="form-control" asp-items="Model.Departments">
+                                            <option selected disabled>Seçiniz</option>
+                                        </select>
+                                        <span asp-validation-for="Input.DepartmentId" class="text-danger"></span>
+                                    </div>
+                                }
+                            </div>
+                            @*<div class="col-md-4">
+                                    @if (await UserManager.IsInRoleAsync(user, "Admin"))   // giren kişi site yöneticisiyse - şirket yöneticisi ekliyorsa
+                                    {
+                                        <div class=" mb-3">
+                                            <label asp-for="Input.CompanyId"></label>
+                                            <select asp-for="Input.CompanyId" class="form-control" asp-items="Model.Companies">
+                                                <option selected disabled>Seçiniz</option>
+                                            </select>
+                                            <span asp-validation-for="Input.CompanyId" class="text-danger"></span>
+                                        </div>
+                                    }
+                                    else if (await UserManager.IsInRoleAsync(user, "Manager"))        // giren kişi sirket yöneticisiyse - employee ekliyorsa
+                                    {
+                                        <div class=" mb-3">
+                                            <label asp-for="Input.CompanyId"></label>
+                                            <select asp-for="Input.CompanyId" class="form-control">
+                                                <option selected disabled value="@user.CompanyId">@user.CompanyName</option>
+                                            </select>
+                                            <span asp-validation-for="Input.CompanyId" class="text-danger"></span>
+                                        </div>
+                                    }
+                                </div>*@
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Input.CityId"></label>
+                                    <select asp-for="Input.CityId" class="form-control" asp-items="Model.Cities" id="inputCity">
+                                        <option selected disabled>Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="Input.CityId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Input.DistrictId"></label>
+                                    <select asp-for="Input.DistrictId" class="form-control" id="inputDistrict">
+                                        <option selected disabled>Lütfen Önce İl Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="Input.DistrictId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Input.Salary"></label>
+                                    <input asp-for="Input.Salary" class="form-control" placeholder="Maaş" />
+                                    <span asp-validation-for="Input.Salary" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Input.Gender"></label>
+                                    <select asp-for="Input.Gender" class="form-control" asp-items="@Html.GetEnumSelectList<Gender>()">
+                                        <option selected disabled>Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label asp-for="Input.FullAddress"></label>
+                                    <textarea asp-for="Input.FullAddress" id="summernote" rows="5" class="form-control" placeholder="Adres"></textarea>
+                                    <span asp-validation-for="Input.FullAddress" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Personeli Ekle</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @* <script src="~/company/js/jquery/jquery.min.js"></script>
+        <a href="~/company/js/jquery/jquery.min.map">~/company/js/jquery/jquery.min.map</a> *@
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedCityName = document.getElementById("inputCity");
+
+            selectedCityName.addEventListener("change", function () {
+                $.ajax({
+                    url: "@Url.Action("GetDistricts","Home", new { area = "" })",
+                    data: {
+                        cityId: selectedCityName.value
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        // İlçe seçeneklerini güncelle
+                        $("#inputDistrict").empty();
+                        $.each(data, function (index, district) {
+                            $("#inputDistrict").append($('<option>', {
+                                value: district.value,
+                                text: district.text
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

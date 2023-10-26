@@ -1,0 +1,174 @@
+﻿@using ApplicationCore.Enums;
+
+@model AdvanceViewModel
+
+@{
+    ViewData["Title"] = "Avans Talep Sayfası";
+    var userId = ViewData["UserId"];
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Avanslar</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Avans Talep Sayfası</h2>
+        <div class="full price_table padding_infor_info">
+            <hr>
+            @if (ViewBag.HasPendingAdvance != null)
+            {
+                <div class="alert alert-danger">@ViewBag.HasPendingAdvance</div>
+            }
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="row ">
+                        <div class="col-md-8">
+                            <form id="profile-form" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                <div class="mb-3">
+                                    <label asp-for="AdvanceType" class="form-label">Avans Türünü Seçiniz</label>
+                                </div>
+                                <select asp-for="AdvanceType" asp-items="@Html.GetEnumSelectList<AdvanceType>()" class="form-control">
+                                    <option value="">Seçiniz</option>
+                                </select>
+                                <span asp-validation-for="AdvanceType" class="text-danger"></span>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Amount" class="form-label">Tutar:</label>
+                                        <input asp-for="Amount" type="number" value="" class="form-control" />
+                                        <span asp-validation-for="Amount" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="selectedCurrency" class="form-label">Para Birimi</label>
+                                        <select asp-for="Currency" asp-items="@Html.GetEnumSelectList<Currency>()" class="form-control">
+                                            <option value="" selected disabled>Seçiniz</option>
+                                        </select>
+                                        <span asp-validation-for="Currency" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label asp-for="Description" class="form-label">Açıklama</label>
+                                        <textarea asp-for="Description" rows="2" class="form-control"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="EmployeeId" type="hidden" value="@userId" class="form-control" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="Status" type="hidden" value="Onay Bekliyor." class="form-control" />
+                                </div>
+                                <button id="update-profile-button" type="submit" class="main_bt read_bt w-100 btn btn-lg btn-primary">Talep Et</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                <label>Kalan Avans Tutarı: <strong>@(((decimal)ViewData["Amount"]) > 0 ? ((decimal)ViewData["Amount"]) : 0) ₺</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            function calculateTotalDays() {
+
+                var startingDateInput = document.getElementById("startingDate");
+                var endingDateInput = document.getElementById("endingDate");
+                var selectedLeaveType = document.getElementById("LeaveType").value;
+
+                var startDate = new Date(startingDateInput.value);
+                var endDate = new Date(startDate);
+
+                if (selectedLeaveType == '1' || selectedLeaveType == '3') {
+
+                    document.getElementById("totalDays").value = 3;
+
+                    endDate.setDate(startDate.getDate() + 3);
+                    var formattedEndDate = endDate.toISOString().slice(0, 10);
+                    endingDateInput.value = formattedEndDate;
+                }
+                else if (selectedLeaveType == '4') {
+
+                    document.getElementById("totalDays").value = 112;
+
+                    endDate.setDate(startDate.getDate() + 112);
+                    var formattedEndDate = endDate.toISOString().slice(0, 10);
+                    endingDateInput.value = formattedEndDate;
+                }
+                else if (selectedLeaveType == '5') {
+                    document.getElementById("totalDays").value = 5;
+
+                    endDate.setDate(startDate.getDate() + 5);
+                    var formattedEndDate = endDate.toISOString().slice(0, 10);
+                    endingDateInput.value = formattedEndDate;
+                }
+                else {
+
+                    var timeDifference = new Date(endingDateInput.value) - new Date(startingDateInput.value) - 1;
+                    var totalDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
+                    document.getElementById("totalDays").value = totalDays;
+                }
+            }
+
+            function disableEndDate() {
+
+                var selectedLeaveType = document.getElementById("LeaveType").value;
+                var endingDateInput = document.getElementById("endingDate");
+                var startingDate = document.getElementById("startingDate");
+
+                if (selectedLeaveType == '1' || selectedLeaveType == '3' || selectedLeaveType == '4' || selectedLeaveType == '5') {
+                    endingDateInput.disabled = true;
+                    document.getElementById("startingDate").addEventListener("change", function () {
+                        calculateTotalDays();
+                    });
+                }
+                else {
+                    endingDateInput.disabled = false;
+                }
+            }
+
+            function clearItems() {
+
+                var startDate = document.getElementById("startingDate");
+                var endDate = document.getElementById("endingDate");
+                var totalDays = document.getElementById("totalDays");
+
+                if (startDate.value || endDate.value != null) {
+
+                    startDate.value = "";
+                    endDate.value = "";
+                    totalDays.value = "";
+                }
+            }
+
+
+            disableEndDate();
+
+            document.getElementById("LeaveType").addEventListener("change", function (e) {
+
+                e.preventDefault();
+                clearItems();
+                disableEndDate();
+            });
+
+            document.getElementById("endingDate", "startingDate").addEventListener("change", function () {
+                calculateTotalDays();
+            });
+        });
+
+    </script>
+}
+
+

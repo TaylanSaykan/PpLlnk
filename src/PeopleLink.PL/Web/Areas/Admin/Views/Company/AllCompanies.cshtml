@@ -1,0 +1,106 @@
+﻿@using Web.Areas.Admin.Models;
+@model List<CompanyViewModel>
+@{
+    ViewData["Title"] = "Tüm Şirketler";
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Tüm Şirketler</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>Tüm Şirketler <br /></h2>
+                                        </div>
+                                        <div class="heading1 margin_0">
+                                            <a asp-controller="Company" asp-action="AddCompany" class="btn btn-success">
+                                                Yeni Şirket Oluştur
+                                                <i class="fa-solid fa-flus"></i>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+
+                                        @if (TempData["Success"] != null)
+                                        {
+                                            <div class="alert alert-success">@TempData["Success"]</div>
+                                        }
+                                        <table class="table table-inbox table-hover table-striped">
+
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th class="view-message">Şirket Logosu</th>
+                                                    <th class="view-message">Şirket Adı</th>
+                                                    <th class="view-message">Şirket Ünvanı</th>
+                                                    <th class="view-message">Şirket Maili</th>
+                                                    <th class="view-message">Şirket Telefonu</th>
+                                                    <th class="view-message">Şirket Adresi</th>
+                                                    <th class="view-message"></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr class="unread text-center">
+                                                        <td class="view-message"><img src="~/document/@item.CompanyLogoUrl" width="80" /></td>
+                                                        <td class="view-message">@item.CompanyName</td>
+                                                        <td class="view-message">@Html.DisplayFor(modelItem => item.Title)</td>
+                                                        <td class="view-message">@item.Email</td>
+                                                        <td class="view-message">@item.PhoneNumber</td>
+                                                        <td class="view-message">@item.Address</td>
+                                                        <td class="text-center"><a asp-controller="Company" asp-action="CompanyDetail" asp-route-companyId="@item.Id"><i class="fa-solid fa-circle-info" style="color: #c78800;"></i></a></td>
+                                                        <td class="text-center"><a asp-controller="Company" asp-action="EditCompany" asp-route-companyId="@item.Id"><i class="fa-solid fa-pen-to-square" style="color: #008a1c;"></i></a></td>
+                                                        <td class="text-center"><a data-remove-item="@item.Id" id="btnDeleteCompany"><i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="DeleteCompany" id="frmDeleteCompany" method="post">
+    <input id="hdnCompanyId" type="hidden" name="companyId" />
+</form>
+
+@section Scripts {
+    <script>
+
+        const btnDelete = document.querySelectorAll("#btnDeleteCompany");
+
+        btnDelete.forEach(button => {
+            console.log(button.value);
+            button.onclick = function (e) {
+                e.preventDefault();
+                const frmDelete = document.getElementById("frmDeleteCompany");
+                const hdnCompanyId = document.getElementById("hdnCompanyId");
+                hdnCompanyId.value = button.getAttribute("data-remove-item");
+                frmDelete.submit();
+            };
+        })
+
+    </script>
+}

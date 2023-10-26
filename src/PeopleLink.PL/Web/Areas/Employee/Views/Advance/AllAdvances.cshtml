@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Avans Listesi";
+}
+
+@model List<AdvanceViewModel>
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Avanslar</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>Avans Talep Listesi <br /></h2>
+                                        </div>
+                                        <div class="heading1 margin_0">
+                                            <a asp-controller="Advance" asp-action="AdvanceRequest" class="btn btn-success">
+                                                Avans Talep Et
+                                                <i class="fa-solid fa-flus">+</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        <div class="mail-option">
+                                            <ul class="nav nav-tabs mb-3 d-flex justifyalign-content-around">
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == null ? " active" : "")" asp-controller="Advance" asp-action="AllAdvances">Tüm Avanslar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Onaylandı." ? "active" : "")" asp-controller="Advance" asp-action="AllAdvances" asp-route-status="Onaylandı.">Onaylananlar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Onay bekliyor." ? "active" : "")" asp-controller="Advance" asp-action="AllAdvances" asp-route-status="Onay bekliyor.">Onay Bekleyenler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Reddedildi." ? "active" : "")" asp-controller="Advance" asp-action="AllAdvances" asp-route-status="Reddedildi.">Reddedilenler</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        @if (ViewBag.HasPendingAdvance != null)
+                                        {
+                                            <div class="alert alert-danger">@ViewBag.HasPendingAdvance</div>
+                                        }
+                                        @if (ViewBag.SuccessAdvance != null)
+                                        {
+                                            <div class="alert alert-success">@ViewBag.SuccessAdvance</div>
+                                        }
+                                        @if (ViewBag.DeleteSuccessAdvance != null)
+                                        {
+                                            <div class="alert alert-success">@ViewBag.DeleteSuccessAdvance</div>
+                                        }
+                                        <table class="table table-inbox table-hover" id="advanceTable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <td>Avans Türü</td>
+                                                    <td>Tutar</td>
+                                                    <td>Para Birimi</td>
+                                                    <td>Açıklama</td>
+                                                    <td>Talep Tarihi</td>
+                                                    <td>Onay Durumu</td>
+                                                    <td>Onay Tarihi</td>
+                                                    <td></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var advance in Model)
+                                                {
+                                                    <tr class="unread text-center">
+                                                        <td class="view-message  dont-show">@Html.DisplayFor(modelItem => advance.AdvanceType)</td>
+                                                        <td class="view-message">@advance.Amount</td>
+                                                        <td class="view-message inbox-small-cells">@Html.DisplayFor(modelItem => advance.Currency)</td>
+                                                        <td>
+                                                            @Html.Raw(advance.Description.Length > 10 ? advance.Description.Substring(0, 10) + "..." : advance.Description)
+                                                        </td>
+                                                        <td class="view-message inbox-small-cells">@advance.RequestDate.ToShortDateString()</td>
+                                                        @if ((advance.Status == "Onay Bekliyor."))
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-warning">@advance.Status</td>
+                                                        }
+                                                        else if ((advance.Status == "Onaylandı."))
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-success">@advance.Status</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-danger">@advance.Status</td>
+                                                        }
+
+                                                        @if (advance.ResponseDate != null)
+                                                        {
+                                                            <td class="view-message inbox-small-cells">@advance.ResponseDate</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message inbox-small-cells">-</td>
+                                                        }
+
+
+                                                        @if (advance.Status == "Onay Bekliyor.")
+                                                        {
+                                                            <td class="view-message text-white"><a data-remove-item="@advance.Id" id="btnDeleteAdvance" class="btn btn-danger"><i class="fa-solid fa-xmark"></i></a></td>
+                                                        }
+                                                        else if (advance.Status == "Onaylandı.")
+                                                        {
+                                                            <td><i class="fa-solid fa-circle-check fa-2x" style="color:#28A745"></i></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><i class="fa-solid fa-circle-xmark fa-2x" style="color:#DC3545"></i></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="DeleteAdvance" id="frmDeleteAdvance" method="post">
+    <input id="hdnAdvanceId" type="hidden" name="advanceId" />
+</form>
+
+@section Scripts {
+    <script>
+
+        //const advanceTable = document.getElementById('advanceTable');
+        //if (advanceTable) {
+        //    new simpleDatatables.DataTable(advanceTable);
+        //}
+
+        const btnDelete = document.querySelectorAll("#btnDeleteAdvance");
+        btnDelete.forEach(button => {
+            button.onclick = function (e) {
+                e.preventDefault();
+                const frmDelete = document.getElementById("frmDeleteAdvance");
+                const hdnAdvanceId = document.getElementById("hdnAdvanceId");
+                hdnAdvanceId.value = button.getAttribute("data-remove-item");
+                frmDelete.submit();
+            };
+
+        });
+
+    </script>
+} 

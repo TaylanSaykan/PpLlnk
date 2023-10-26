@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "Personel Listesi";
+}
+
+@model List<ApplicationUser>
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Personel İşlemleri</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>Personel Listesi <br /></h2>
+                                        </div>
+
+                                        <div class="heading1 margin_0">
+                                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-success">
+                                                Yeni Personel Ekle
+                                                <i class="fa-solid fa-plus"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        <div class="w-100">
+                                            <table id="employeeTable" class="table-striped table-hover w-100">
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th>Fotoğraf</th>
+                                                        <th>Ad - Soyad</th>
+                                                        <th>Meslek</th>
+                                                        <th>Departman</th>
+                                                        <th>Telefon</th>
+                                                        <th>Email</th>
+                                                        <th>Durumu</th>
+                                                        <th>Detay Bilgiler</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var employee in Model)
+                                                    {
+                                                        <tr>
+                                                            <td><img src="~/img/@employee.PictureUri" alt="Alternate Text" height="60" width="80" /></td>
+                                                            <td>@employee.FirstName  @(employee.MiddleName != null ? employee.MiddleName : "") @(employee.MiddleLastName != null ? employee.MiddleLastName : "") @employee.LastName</td>
+                                                            <td>@employee.OccupationName</td>
+                                                            <td>@employee.DepartmentName</td>
+                                                            <td>@employee.PhoneNumber</td>
+                                                            <td>@employee.Email</td>
+                                                            @if (employee.IsActive)
+                                                            {
+                                                                <td> <div class="bg-success text-white text-center p-1">Aktif</div></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td> <div class="bg-danger text-white text-center p-1">Pasif</div></td>
+                                                            }
+                                                            <td class="text-center"><a asp-controller="Employee" asp-action="DetailEmployee" asp-route-employeeId="@employee.Id"><i class="fa-solid fa-info-circle orange_color2"></i></a></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const employeeTable = document.getElementById('employeeTable');
+        if (employeeTable) {
+            new simpleDatatables.DataTable(employeeTable);
+        }
+    </script>
+}

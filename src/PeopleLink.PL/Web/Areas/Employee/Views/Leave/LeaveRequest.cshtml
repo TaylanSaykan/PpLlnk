@@ -1,0 +1,180 @@
+﻿@using ApplicationCore.Enums;
+
+@model LeaveViewModel
+
+@{
+    ViewData["Title"] = "İzin Talep Sayfası";
+    var userId = ViewData["UserId"];
+    var leaveTypes = ViewBag.LeaveTypes;
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>İzinler</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>İzin Talep Sayfası</h2>
+        <div class="full price_table padding_infor_info">
+            <hr>
+                       <div class="row">
+                <div class="col-md-9">
+                    <div class="row ">
+                        <div class="col-md-9">
+                            <form asp-action="LeaveRequest" method="post">
+                                <div class="mb-3">
+                                    <label asp-for="LeaveType" class="form-label">İzin Türünü Seçiniz</label>
+                                    <select asp-for="LeaveType" class="form-control" id="leaveType">
+                                        <option value="" disabled selected>Seçiniz</option>
+                                        @foreach (var leaveType in leaveTypes)
+                                        {
+                                            <option value="@((int)leaveType)">@ApplicationCore.Constants.EnumHelper.DisplayName(leaveType)</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="LeaveType" class="text-danger"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="StartingDate" class="form-label">Başlangıç Tarihi</label>
+                                        <input id="startingDate" asp-for="StartingDate" type="date" class="form-control" />
+                                        <span asp-validation-for="StartingDate" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="EndingDate" class="form-label">Bitiş Tarihi</label>
+                                        <input id="endingDate" asp-for="EndingDate" type="date" class="form-control" />
+                                        <span asp-validation-for="EndingDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="TotalDays" class="form-label">Toplam Gün</label>
+                                    <input asp-for="TotalDays" class="form-control" type="text" id="totalDays" />
+                                    <span asp-validation-for="TotalDays" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="EmployeeId" type="hidden" value="@userId" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="RequestDate" type="hidden" value="@DateTime.Now" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="ApprovalDate" type="hidden" value="@DateTime.Now.AddDays(2)" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input asp-for="Status" type="hidden" value="Onay Bekliyor." class="form-control" />
+                                </div>
+                                <button id="update-profile-button" type="submit" class="main_bt read_bt w-100 btn btn-lg btn-primary">Talep Et</button>
+                            </form>
+                        </div>
+                        <div class="col-md-3">
+                            <div>
+                                <label>Kalan Yıllık İzin Gün Sayısı: <strong>@(((int)ViewData["AccruedLeave"]) > 0 ? ((int)ViewData["AccruedLeave"]) : 0)</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var startingDateInput = document.getElementById("startingDate");
+            var endingDateInput = document.getElementById("endingDate");
+            var totalDays = document.getElementById("totalDays");
+            var leaveTypeInput = document.getElementById("leaveType");
+
+            function updateTotalDays() {
+                var timeDifference = new Date(endingDateInput.value) - new Date(startingDateInput.value) - 2;
+                var totalDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
+                document.getElementById("totalDays").value = totalDays;
+                console.log(totalDays);
+            }
+
+            function setDateLimits() {
+                var today = new Date();
+                today.setDate(today.getDate() + 1);
+                startingDateInput.min = today.toISOString().split("T")[0];
+                today.setDate(today.getDate() + 89);
+                startingDateInput.max = today.toISOString().split("T")[0];
+            }
+
+            function calculateTotalDays() {
+                var leaveType = leaveTypeInput.value;
+                var startingDate = new Date(startingDateInput.value);
+                var endingDate = new Date(startingDate);
+                setDateLimits();
+
+                if (leaveType === '1' || leaveType === '3' || leaveType === '4' || leaveType === '5') {
+                    endingDateInput.disabled = true;
+
+                    if (leaveType === '1') {
+                        var today = new Date();
+                        today.setDate(today.getDate() - 7);
+                        startingDateInput.min = today.toISOString().split("T")[0];
+                        today.setDate(today.getDate() + 14);
+                        startingDateInput.max = today.toISOString().split("T")[0];
+                        totalDays.value = 3;
+                        endingDate.setDate(startingDate.getDate() + 3);
+                    } else if (leaveType === '3') {
+                        totalDays.value = 3;
+                        endingDate.setDate(startingDate.getDate() + 3);
+                    } else if (leaveType === '4') {
+                        totalDays.value = 112;
+                        endingDate.setDate(startingDate.getDate() + 112);
+                    } else if (leaveType === '5') {
+                        totalDays.value = 5;
+                        endingDate.setDate(startingDate.getDate() + 5);
+                    }
+                    var formattedEndDate = endingDate.toISOString().slice(0, 10);
+                    endingDateInput.value = formattedEndDate;
+                } else {
+                    endingDateInput.disabled = false;
+                    setStartingDateLimits();
+                    updateTotalDays();
+                }
+
+            }
+
+            leaveTypeInput.addEventListener("change", function () {
+                clearItems();
+                calculateTotalDays();
+            });
+
+            startingDateInput.addEventListener("input", function () {
+                var startingDate = new Date(startingDateInput.value);
+                var endingDate = new Date(startingDate);
+                startingDate.setDate(startingDate.getDate() + 1);
+                endingDate.setDate(startingDate.getDate() + 10);
+
+                endingDateInput.value = endingDateInput.min;
+                endingDateInput.min = startingDate.toISOString().split("T")[0];
+                endingDateInput.max = endingDate.toISOString().split("T")[0];
+                calculateTotalDays();
+            });
+
+            endingDateInput.addEventListener("input", function () {
+                updateTotalDays();
+            });
+
+            function clearItems() {
+                startingDateInput.value = "";
+                endingDateInput.value = "";
+                totalDays.value = "";
+            }
+
+            setDateLimits();
+        });
+
+    </script>
+}
+
+
+
+

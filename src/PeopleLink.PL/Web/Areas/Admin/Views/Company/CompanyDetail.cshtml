@@ -1,0 +1,98 @@
+﻿@using Web.Areas.Admin.Models;
+@{
+    ViewBag.Title = "Detay Bilgiler";
+}
+
+
+@model CompanyViewModel
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Şirket Bilgileri</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Detay Bilgiler</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-4">
+                    <div class="row justify-content-center">
+                        <img src="~/document/@Model.CompanyLogoUrl" class="mb-3 img-responsive rounded-circle" width="350" />
+                    </div>
+                    <div class="d-flex flex-column justify-content-center align-items-center contact_inner">
+                        <h3>@Model.CompanyName</h3>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Telefon:</div>
+                        <div>@Model.PhoneNumber</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Mersis : </div>
+                        <div> @Model.MERSISNumber</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Vergi Numarası : </div>
+                        <div>@Model.TaxNumber</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Vergi Dairesi : </div>
+                        <div>@Model.TaxOffice</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Adres:</div>
+                        <div>@Model.Address , @Model.CityName/@Model.DistrictName</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Çalışan Sayısı : </div>
+                        <div>@Model.EmployeeCount</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Kuruluş Yılı : </div>
+                        <div>@Model.EstablishmentYear</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Sözleşme Başlangıç Tarihi : </div>
+                        <div> @Model.ContractStartDate.ToShortDateString()</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Sözleşme Bitiş Tarihi : </div>
+                        <div> @Model.ContractEndDate.ToShortDateString()</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div style="font-weight:bold">Aktiflik Durumu:</div>
+                        <div>
+                            @if (Model.IsActive)
+                            {
+                                <div class="bg-success text-white p-1">Aktif</div>
+                            }
+                            else
+                            {
+                                <div class="bg-danger text-white p-1">Pasif</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-md-2">
+                    <a class="btn btn-secondary" asp-area="Admin" asp-controller="Company" asp-action="AllCompanies"><i class="fa-solid fa-arrow-left"></i> Anasayfaya Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

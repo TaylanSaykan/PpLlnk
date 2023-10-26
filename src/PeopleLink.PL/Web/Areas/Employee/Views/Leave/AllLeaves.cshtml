@@ -1,0 +1,164 @@
+﻿@model List<LeaveViewModel>
+@{
+    ViewData["Title"] = "İzinler Sayfası";
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>İzinler</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>İzin Listesi <br /></h2>
+                                        </div>
+                                        <div class="heading1 margin_0">
+                                            <a asp-controller="Leave" asp-action="LeaveRequest" class="btn btn-success">
+                                                Yeni İzin Talep Et
+                                                <i class="fa-solid fa-flus"></i>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        <div class="mail-option">
+                                            <ul class="nav nav-tabs mb-3 d-flex justifyalign-content-around">
+                                                <li class="nav-item">
+                                                    <a asp-controller="Leave" asp-action="AllLeaves" class="nav-link @(ViewBag.Status == null ? "active" : "")">Tüm İzinler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-controller="Leave" asp-action="AllLeaves" asp-route-status="Onaylandı." class="nav-link @(ViewBag.Status == "Onaylandı." ? "active" : "")">Onaylananlar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-controller="Leave" asp-action="AllLeaves" asp-route-status="Onay Bekliyor." class="nav-link @(ViewBag.Status == "Onay Bekliyor." ? "active" : "")">Onay Bekleyenler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-controller="Leave" asp-action="AllLeaves" asp-route-status="Reddedildi." class="nav-link @(ViewBag.Status == "Reddedildi." ? "active" : "")">Reddedilenler</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        @if (TempData["HasPendingLeave"] != null)
+                                        {
+                                            <div class="alert alert-danger">@TempData["HasPendingLeave"]</div>
+                                        }
+                                        @if (TempData["SuccessLeave"] != null)
+                                        {
+                                            <div class="alert alert-success">@TempData["SuccessLeave"]</div>
+                                        }
+                                        @if (TempData["DeleteSuccessLeave"] != null)
+                                        {
+                                            <div class="alert alert-success">@TempData["DeleteSuccessLeave"]</div>
+                                        }
+                                        @if (TempData["AccuredLeave"] != null)
+                                        {
+                                            <div class="alert alert-warning">@TempData["AccuredLeave"]</div>
+                                        }
+                                        <table class="table table-inbox table-hover table-striped" id="leaveTable">
+
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th class="view-message ">İzin Türü</th>
+                                                    <th class="view-message ">Başlangıç Tarihi</th>
+                                                    <th class="view-message ">Biriş Tarihi</th>
+                                                    <th class="view-message ">Toplam Gün</th>
+                                                    <th class="view-message ">Talep Tarihi</th>
+                                                    <th class="view-message ">Onay Durumu</th>
+                                                    <th class="view-message">Onay Tarihi</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr class="unread text-center">
+                                                        <td class="view-message">@Html.DisplayFor(modelItem => item.LeaveType)</td>
+                                                        <td class="view-message">@item.StartingDate.ToShortDateString()</td>
+                                                        <td class="view-message">@item.EndingDate.ToShortDateString()</td>
+                                                        <td class="view-message ms-2">@(item.TotalDays)</td>
+                                                        <td class="view-message">@item.RequestDate.ToShortDateString()</td>
+                                                        @if ((item.Status == "Onay Bekliyor."))
+                                                        {
+                                                            <td class="view-message text-warning">@item.Status</td>
+                                                        }
+                                                        else if ((item.Status == "Onaylandı."))
+                                                        {
+                                                            <td class="view-message text-success">@item.Status</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message text-danger">@item.Status</td>
+                                                        }
+                                                        @if (item.ApprovalDate != null)
+                                                        {
+                                                            <td class="view-message ">@item.ApprovalDate</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>-</td>
+                                                        }
+
+                                                        @if (item.Status == "Onay Bekliyor.")
+                                                        {
+                                                            <td class="view-message text-white"><a data-remove-item="@item.Id" id="btnDeleteLeave" class="btn btn-danger"><i class="fa-solid fa-xmark"></i></a></td>
+                                                        }
+                                                        else if (item.Status == "Onaylandı.")
+                                                        {
+                                                            <td class="view-message text-white"><i class="fa-solid fa-circle-check" style="color: #38be1e;"></i></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message text-white"><i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="DeleteLeave" id="frmDeleteLeave" method="post">
+    <input id="hdnLeaveId" type="hidden" name="leaveId" />
+</form>
+
+@section Scripts {
+    <script>
+
+        //const leaveTable = document.getElementById('leaveTable');
+        //if (leaveTable) {
+        //    new simpleDatatables.DataTable(leaveTable);
+        //}
+
+        const btnDelete = document.querySelectorAll("#btnDeleteLeave");
+        btnDelete.forEach(button => {
+            button.onclick = function (e) {
+                e.preventDefault();
+                const frmDelete = document.getElementById("frmDeleteLeave");
+                const hdnLeaveId = document.getElementById("hdnLeaveId");
+                hdnLeaveId.value = button.getAttribute("data-remove-item");
+                frmDelete.submit();
+            };
+        });
+
+    </script>
+}

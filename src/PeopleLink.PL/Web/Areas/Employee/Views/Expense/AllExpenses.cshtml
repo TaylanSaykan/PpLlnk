@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Harcama Listesi";
+}
+
+@model List<GetExpenseViewModel>
+
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Harcamalar</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>Harcama Listesi <br /></h2>
+                                        </div>
+
+                                        <div class="heading1 margin_0">
+                                            <a asp-controller="Expense" asp-action="ExpenseRequest" class="btn btn-success">
+                                                Yeni Harcama Talep Et
+                                                <i class="fa-solid fa-flus"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        <div class="mail-option">
+                                            <ul class="nav nav-tabs mb-3 d-flex justifyalign-content-around">
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == null ? " active" : "")" asp-controller="Expense" asp-action="AllExpenses">Tüm Harcamalar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Onaylandı." ? "active" : "")" asp-controller="Expense" asp-action="AllExpenses" asp-route-status="Onaylandı.">Onaylananlar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Onay bekliyor." ? "active" : "")" asp-controller="Expense" asp-action="AllExpenses" asp-route-status="Onay bekliyor.">Onay Bekleyenler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link @(ViewBag.Status == "Reddedildi." ? "active" : "")" asp-controller="Expense" asp-action="AllExpenses" asp-route-status="Reddedildi.">Reddedilenler</a>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                        @if (TempData["HasPendingExpense"] != null)
+                                        {
+                                            <div class="alert alert-danger">@TempData["HasPendingExpense"]</div>
+                                        }
+                                        @if (TempData["PendingExpense"] != null)
+                                        {
+                                            <div class="alert alert-danger">@TempData["HasPendingExpense"]</div>
+                                        }
+                                        @if (TempData["Amount"] != null)
+                                        {
+                                            <div class="alert alert-warning">@TempData["Amount"]</div>
+                                        }
+                                        @if (TempData["SuccessExpense"] != null)
+                                        {
+                                            <div class="alert alert-success">@TempData["SuccessExpense"]</div>
+                                        }
+                                        @if (TempData["DeleteSuccessExpense"] != null)
+                                        {
+                                            <div class="alert alert-success">@TempData["DeleteSuccessExpense"]</div>
+                                        }
+                                        <table class="table table-inbox table-hover table-striped" id="expenseTable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <td>Harcama Türü</td>
+                                                    <td>Tutar</td>
+                                                    <td>Para Birimi</td>
+                                                    <td>Talep Tarihi</td>
+                                                    <td>Onay Durumu</td>
+                                                    <td>Onay Tarihi</td>
+                                                    <td>Doküman</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var expense in Model)
+                                                {
+                                                    <tr class="unread text-center">
+                                                        <td class="view-message  dont-show">@Html.DisplayFor(modelItem => expense.ExpenseType)</td>
+                                                        <td class="view-message">@expense.Amount</td>
+                                                        <td class="view-message inbox-small-cells">@Html.DisplayFor(modelItem => expense.Currency)</td>
+                                                        <td class="view-message inbox-small-cells">@expense.RequestDate.ToShortDateString()</td>
+                                                        @if ((expense.Status == "Onay Bekliyor."))
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-warning">@expense.Status</td>
+                                                        }
+                                                        else if ((expense.Status == "Onaylandı."))
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-success">@expense.Status</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message inbox-small-cells text-danger">@expense.Status</td>
+                                                        }
+
+                                                        @if (expense.ResponseDate != null)
+                                                        {
+                                                            <td class="view-message inbox-small-cells">@expense.ResponseDate</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message inbox-small-cells">-</td>
+                                                        }
+                                                        <td class="text-center"><a class="dokuman" href="~/document/@expense.DocumentUri" download="@expense.DocumentUri" style="color:midnightblue"><i class="fa-solid fa-download"></i></a></td>
+                                                        @if (expense.Status == "Onay Bekliyor.")
+                                                        {
+                                                            <td class="view-message text-white"><a data-remove-item="@expense.Id" id="btnDeleteExpense" class="btn btn-danger"><i class="fa-solid fa-xmark"></i></a></td>
+                                                        }
+                                                        else if (expense.Status == "Onaylandı.")
+                                                        {
+                                                            <td class="view-message text-white"><i class="fa-solid fa-circle-check" style="color: #38be1e;"></i></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message text-white"><i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="DeleteExpense" id="frmDeleteExpense" method="post">
+    <input id="hdnExpenseId" type="hidden" name="expenseId" />
+</form>
+
+@section Scripts {
+    <script>
+
+        //const expenseTable = document.getElementbyId('expenseTable');
+        //if (expenseTable) {
+        //    new simpleDatatables.DataTable(expenseTable);
+        //}
+
+        const btnDelete = document.querySelectorAll("#btnDeleteExpense");
+        btnDelete.forEach(button => {
+            button.onclick = function (e) {
+                e.preventDefault();
+                const frmDelete = document.getElementById("frmDeleteExpense");
+                const hdnExpenseId = document.getElementById("hdnExpenseId");
+                hdnExpenseId.value = button.getAttribute("data-remove-item");
+                frmDelete.submit();
+            };
+        });
+
+    </script>
+}

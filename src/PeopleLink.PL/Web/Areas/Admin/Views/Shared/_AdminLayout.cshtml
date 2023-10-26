@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>People-Link - @TempData["Name"]</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- site icon -->
+    <link rel="icon" href="~/img/icon.png" /> @*// logo*@
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="~/company/css/bootstrap.min.css" />
+    <!-- site css -->
+    <link rel="stylesheet" href="~/company/css/manager-style.css" />
+    <!-- responsive css -->
+    <link rel="stylesheet" href="~/company/css/responsive.css" />
+    <!-- color css -->
+    <link rel="stylesheet" href="~/company/css/colors.css" />
+    <!-- select bootstrap -->
+    <link rel="stylesheet" href="~/company/css/bootstrap-select.css" />
+    <!-- scrollbar css -->
+    <link rel="stylesheet" href="~/company/css/perfect-scrollbar.css" />
+    <!-- custom css -->
+    <link rel="stylesheet" href="~/company/css/custom.css" />
+    <link href="~/company/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+</head>
+<body class="dashboard dashboard_1">
+    <div class="full_container">
+        <div class="inner_container">
+            <!-- Sidebar  -->
+            <nav id="sidebar" style="background-image: url('/company/images/layout_img/pattern_h.png');">
+                <div class="sidebar_blog_1">
+                    <div class="sidebar-header">
+                        <div class="logo_section">
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><img class="logo_icon img-responsive" src="~/img/favicon.png" alt="#" /></a>
+                        </div>
+                    </div>
+                    <div class="sidebar_user_info">
+                        <div class="icon_setting"></div>
+                        <div class="user_profle_side">
+                            <div><a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><img class="img-responsive" src="~/img/logo.png" /></a></div>
+                            <div class="user_info">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar_blog_2">
+                    <h4><img src="~/company/images/star.png" alt="Alternate Text" /> Yönetim Paneli </h4>
+                    <ul class="list-unstyled components">
+                        <li><a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-home yellow_color" aria-hidden="true"></i><span>Anasayfa</span></a></li>
+                        <li class="active">
+                            <a href="#dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-dashboard orange_color"></i> <span>Yönetici Profili</span></a>
+                            <ul class="collapse list-unstyled" id="dashboard">
+                                <li>
+                                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Details"><span>Detay Bilgiler</span></a>
+                                </li>
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Manage/Index"> <span>Bilgileri Düzenle</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#yönetim" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-building blue1_color"></i> <span>Şirket Yönetimi</span></a>
+                            <ul class="collapse list-unstyled" id="yönetim">
+                                <li>
+                                    <a asp-area="Admin" asp-controller="Company" asp-action="AllCompanies"><span>Şirket Listesi</span></a>
+                                </li>
+                                <li>
+                                    <a asp-area="Admin" asp-controller="Company" asp-action="AddCompany"> <span>Şirket Ekle</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#yönetici" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-user red_color"></i> <span>Şirket Yöneticisi</span></a>
+                            <ul class="collapse list-unstyled" id="yönetici">
+                                <li>
+                                    <a asp-area="Admin" asp-controller="Manager" asp-action="AllManagers"><span>Yönetici Listesi</span></a>
+                                </li>
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Register"><span>Yönetici Ekle</span></a>
+                                </li>
+                                <li>
+                                    <a asp-area="Admin" asp-controller="Manager" asp-action="AssignManagerToCompany"><span>Yönetici Ata</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end sidebar -->
+            <!-- right content -->
+            <div id="content">
+                <!-- topbar -->
+                <div class="topbar">
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="full">
+                            <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i class="fa fa-bars"></i></button>
+                            <div class="right_topbar">
+                                <div class="icon_info">
+                                    <ul class="user_profile_dd">
+                                        <li>
+                                            <a class="dropdown-toggle" data-toggle="dropdown"><img class="img-responsive rounded-circle" src="~/img/@TempData["Picture"]" alt="#" /><span class="name_user">@TempData["Name"]</span></a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Details">Profil</a>
+                                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profili Düzenle</a>
+                                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"><span>Çıkış Yap</span> <i class="fa fa-sign-out"></i></a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <!-- end topbar -->
+                <!-- dashboard inner -->
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row column1">
+                            @RenderBody()
+                            <div />
+                        </div>
+                        <!-- footer -->
+                        <div class="container-fluid">
+                            <div class="footer">
+                                <p>
+                                    Copyright © 2023 People Link. All rights reserved.<br><br>
+                                    Distributed By: People Link
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end dashboard inner -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/company/js/jquery/jquery.min.js"></script>
+    <a href="~/company/js/jquery/jquery.min.map">~/company/js/jquery/jquery.min.map</a>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    @* <script src="~/company/js/jquery.min.js"></script> *@
+    <script src="~/company/js/popper.min.js"></script>
+    <script src="~/company/js/bootstrap.min.js"></script>
+    <!-- wow animation -->
+    <script src="~/company/js/animate.js"></script>
+    <!-- select country -->
+    <script src="~/company/js/bootstrap-select.js"></script>
+    <!-- owl carousel -->
+    <script src="~/company/js/owl.carousel.js"></script>
+    <!-- chart js -->
+    <script src="~/company/js/Chart.min.js"></script>
+    <script src="~/company/js/Chart.bundle.min.js"></script>
+    <script src="~/company/js/utils.js"></script>
+    <script src="~/company/js/analyser.js"></script>
+    <!-- nice scrollbar -->
+    <script src="~/company/js/perfect-scrollbar.min.js"></script>
+    <script>var ps = new PerfectScrollbar('#sidebar');</script>
+    <!-- custom js -->
+    <script src="~/company/js/custom.js"></script>
+    <script src="~/company/js/chart_custom_style1.js"></script>
+    @await RenderSectionAsync("Scripts", false);
+</body>
+</html>

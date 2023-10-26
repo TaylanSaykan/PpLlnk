@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Yönetim Paneli";
+}
+
+@model Web.Areas.Manager.Models.ManagerViewModel
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Anasayfa</h2>
+        </div>
+    </div>
+</div>
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full graph_head">
+        <h2>Hoşgeldiniz!</h2>
+    </div>
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <div class="row justify-content-center mb-3 w-auto">
+                        <img src="~/img/@Model.Picture" class="mb-3 img-responsive rounded-circle" width="350" />
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="d-flex flex-column contact_inner">
+                        <h3 style="font-size:20px">@Model.FirstName @Model.MiddleName @Model.LastName @Model.MiddleLastName</h3>
+                        <p style="font-size:14px"><strong>Meslek: </strong>@Model.OccupationName</p>
+                        <p style="font-size:14px"><strong>Departman: </strong>@Model.DepartmentName</p>
+                        <p style="font-size:14px"><strong>E-mail: </strong>@Model.Email</p>
+                        <p style="font-size:14px"><strong>Telefon: </strong>@Model.PhoneNumber</p>
+                        <p style="font-size:14px"><strong>Adres: </strong>@Model.FullAddress</p>
+                    </div>
+                </div>
+            </div><div class="row">
+                <div class="d-flex justify-content-end">
+                    <div>
+                        <a class="main_bt read_bt mx-2" asp-area="Manager" asp-controller="Dashboard" asp-action="Details">Yönetici Profili</a>
+                    </div>
+                    <div>
+                        <a class="main_bt read_bt " asp-area="Identity" asp-page="/Account/Manage/Index">Profili Düzenle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

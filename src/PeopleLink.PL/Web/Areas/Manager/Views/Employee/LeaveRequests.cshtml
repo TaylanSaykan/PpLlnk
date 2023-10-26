@@ -1,0 +1,152 @@
+﻿@inject UserManager<ApplicationUser> UserManager
+
+@model LeaveListViewModel
+@{
+    ViewData["Title"] = "Personel İzin Talepleri";
+}
+
+<div class="row column_title">
+    <div class="col-md-12">
+        <div class="page_title">
+            <h2>Personel Talepleri</h2>
+        </div>
+    </div>
+</div>
+
+
+<div class="white_shd full margin_bottom_30">
+    <div class="full price_table padding_infor_info">
+        <div class="details-page">
+            <div class="inner_page email_page">
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- table section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full graph_head d-flex justify-content-between">
+                                        <div class="heading1 margin_0">
+                                            <h2>İzin Talepleri<br /></h2>
+                                        </div>
+                                        <div class="heading1 margin_0">
+                                        </div>
+                                    </div>
+                                    <div class="inbox-body">
+                                        <div class="mail-option">
+                                            <ul class="nav nav-tabs mb-3 d-flex align-content-around">
+                                                <li class="nav-item">
+                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="LeaveRequests" class="nav-link @(ViewBag.Status == null ? "active" : "")" onclick="setActive(this)">Tüm İzinler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="LeaveRequests" asp-route-status="Onaylandı." class="nav-link @(ViewBag.Status == "Onaylandı." ? "active" : "")" onclick="setActive(this)">Onaylananlar</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="LeaveRequests" asp-route-status="Onay Bekliyor." class="nav-link @(ViewBag.Status == "Onay Bekliyor." ? "active" : "")" onclick="setActive(this)">Onay Bekleyenler</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="LeaveRequests" asp-route-status="Reddedildi." class="nav-link @(ViewBag.Status == "Reddedildi." ? "active" : "")" onclick="setActive(this)">Reddedilenler</a>
+                                                </li>
+                                            </ul>
+                                            @if (TempData["Success"] != null)
+                                            {
+                                                <div class="alert alert-success">@TempData["Success"]</div>
+                                            }
+
+                                        </div>
+                                        <table class="table table-inbox table-hover table-striped" id="leaveTable">
+
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th class="view-message">Personel Ad - Soyad</th>
+                                                    <th class="view-message">İzin Türü</th>
+                                                    <th class="view-message">Başlangıç Tarihi</th>
+                                                    <th class="view-message">Biriş Tarihi</th>
+                                                    <th class="view-message">Toplam Gün</th>
+                                                    <th class="view-message">Talep Tarihi</th>
+                                                    <th class="view-message">Onay Durumu</th>
+                                                    <th class="view-message">Onay/Red Tarihi</th>
+                                                    <th class="view-message">Onay</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.Leaves)
+                                                {
+                                                    <tr class="unread text-center">
+                                                        <td class="view-message">
+                                                            @{
+                                                                var user = await UserManager.FindByIdAsync(item.EmployeeId);
+                                                                if (user != null)
+                                                                {
+                                                                    <span>@user.FirstName @(user.MiddleName != null ? user.MiddleName : "") @user.LastName  @(user.MiddleLastName != null ? user.MiddleLastName : "") </span>
+                                                                }
+                                                            }
+                                                        </td>
+                                                        <td class="view-message">@Html.DisplayFor(modelItem => item.LeaveType)</td>
+                                                        <td class="view-message">@item.StartingDate.ToShortDateString()</td>
+                                                        <td class="view-message">@item.EndingDate.ToShortDateString()</td>
+                                                        <td class="view-message ms-2">@item.TotalDays</td>
+                                                        <td class="view-message">@item.RequestDate.ToShortDateString()</td>
+                                                        @if ((item.Status == "Onay Bekliyor."))
+                                                        {
+                                                            <td> <div class="text-warning">@item.Status <i class="fa-solid fa-circle-exclamation yellow_color"></i></div></td>
+                                                        }
+                                                        else if ((item.Status == "Onaylandı."))
+                                                        {
+                                                            <td><div class="text-success">@item.Status</div></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><div class="text-danger">@item.Status</div></td>
+                                                        }
+                                                        @if (item.ApprovalDate != null)
+                                                        {
+                                                            <td class="view-message">@item.ApprovalDate</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="view-message">-</td>
+                                                        }
+
+                                                        @if (item.Status == "Onay Bekliyor.")
+                                                        {
+                                                            <td>
+                                                                <div class="d-flex align-items-baseline gap-2">
+                                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="UpdateLeave" asp-route-leaveId="@item.Id" asp-route-status="Onaylandı." class="btn btn-success text-white mb-1" id="btnUpdate">Onayla</a>
+                                                                    <a asp-area="Manager" asp-controller="Employee" asp-action="UpdateLeave" asp-route-leaveId="@item.Id" asp-route-status="Reddedildi." class="btn btn-danger text-white mb-1" id="btnUpdate">Reddet</a>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                        else if (item.Status == "Onaylandı.")
+                                                        {
+                                                            <td><i class="fa-solid fa-circle-check fa-2x" style="color:#28A745"></i></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><i class="fa-solid fa-circle-xmark fa-2x" style="color:#DC3545"></i></td>
+                                                        }
+
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+
+        const leaveTable = document.getElementById('leaveTable');
+        if (leaveTable) {
+            new simpleDatatables.DataTable(leaveTable);
+        }
+    </script>
+}
